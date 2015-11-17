@@ -1,0 +1,513 @@
+******************************************************************************
+                  TI ARM Linker PC v5.2.5                      
+******************************************************************************
+>> Linked Mon Nov 16 00:42:58 2015
+
+OUTPUT FILE NAME:   <pwm.out>
+ENTRY POINT SYMBOL: "_c_int00"  address: 20008161
+
+
+MEMORY CONFIGURATION
+
+         name            origin    length      used     unused   attr    fill
+----------------------  --------  ---------  --------  --------  ----  --------
+  SRAM_CODE             20004000   00013000  00004a8a  0000e576  RW X
+  SRAM_DATA             20017000   00019000  00001160  00017ea0  RW X
+
+
+SEGMENT ALLOCATION MAP
+
+run origin  load origin   length   init length attrs members
+----------  ----------- ---------- ----------- ----- -------
+20004000    20004000    00004a90   00004a90    r-x
+  20004000    20004000    00000400   00000400    r-- .intvecs
+  20004400    20004400    0000423a   0000423a    r-x .text
+  20008640    20008640    000003d8   000003d8    r-- .const
+  20008a18    20008a18    00000078   00000078    r-- .cinit
+20017000    20017000    00000960   00000000    rw-
+  20017000    20017000    00000800   00000000    rw- .sysmem
+  20017800    20017800    0000015c   00000000    rw- .data
+  2001795c    2001795c    00000004   00000000    rw- .bss
+2002f800    2002f800    00000800   00000000    rw-
+  2002f800    2002f800    00000800   00000000    rw- .stack
+
+
+SECTION ALLOCATION MAP
+
+ output                                  attributes/
+section   page    origin      length       input sections
+--------  ----  ----------  ----------   ----------------
+.intvecs   0    20004000    00000400     
+                  20004000    00000400     startup_ccs.obj (.intvecs)
+
+.init_array 
+*          0    20004000    00000000     UNINITIALIZED
+
+.text      0    20004400    0000423a     
+                  20004400    000010a6     rtsv7M4_T_le_eabi.lib : _printfi.obj (.text)
+                  200054a6    00000002     --HOLE-- [fill = 0]
+                  200054a8    00000906                           : _scanfi.obj (.text)
+                  20005dae    00000002     --HOLE-- [fill = 0]
+                  20005db0    000003dc                           : memory.obj (.text)
+                  2000618c    00000280     uart_if.obj (.text)
+                  2000640c    00000238     rtsv7M4_T_le_eabi.lib : strtod.obj (.text)
+                  20006644    00000210     main.obj (.text)
+                  20006854    000001f4     rtsv7M4_T_le_eabi.lib : ull_div_t2.obj (.text)
+                  20006a48    000001e4                           : strtoll.obj (.text)
+                  20006c2c    000001b6                           : fd_add_t2.obj (.text)
+                  20006de2    00000002     --HOLE-- [fill = 0]
+                  20006de4    0000016c                           : strtoull.obj (.text)
+                  20006f50    00000136                           : fd_div_t2.obj (.text)
+                  20007086    00000002     --HOLE-- [fill = 0]
+                  20007088    00000134     driverlib.a : prcm.obj (.text:PRCMCC3200MCUInit)
+                  200071bc    00000134     rtsv7M4_T_le_eabi.lib : strtol.obj (.text)
+                  200072f0    00000114                           : strtoul.obj (.text)
+                  20007404    00000110                           : xdscale.obj (.text)
+                  20007514    000000fc                           : fd_mul_t2.obj (.text)
+                  20007610    000000cc                           : sscanf.obj (.text)
+                  200076dc    000000be                           : xdnorm.obj (.text)
+                  2000779a    00000002     --HOLE-- [fill = 0]
+                  2000779c    000000a8     driverlib.a : interrupt.obj (.text:IntEnable)
+                  20007844    0000009c     rtsv7M4_T_le_eabi.lib : memcpy_t2.obj (.text)
+                  200078e0    00000094     driverlib.a : prcm.obj (.text:PRCMPeripheralClockGet)
+                  20007974    00000088                 : pin.obj (.text:PinConfigSet)
+                  200079fc    00000088     rtsv7M4_T_le_eabi.lib : vsnprintf.obj (.text)
+                  20007a84    00000086                           : fd_cmp_t2.obj (.text:__aeabi_cdcmple)
+                  20007b0a    00000086                           : fd_cmp_t2.obj (.text:__aeabi_cdrcmple)
+                  20007b90    0000007a                           : memset_t2.obj (.text)
+                  20007c0a    00000076     driverlib.a : uart.obj (.text:UARTConfigSetExpClk)
+                  20007c80    0000006c     rtsv7M4_T_le_eabi.lib : autoinit.obj (.text)
+                  20007cec    0000006a                           : copy_decompress_rle.obj (.text)
+                  20007d56    00000066                           : xdunscal.obj (.text)
+                  20007dbc    00000058     driverlib.a : prcm.obj (.text:PRCMPeripheralReset)
+                  20007e14    00000056     rtsv7M4_T_le_eabi.lib : ltoa.obj (.text)
+                  20007e6a    00000002     --HOLE-- [fill = 0]
+                  20007e6c    0000004c                           : atoi.obj (.text)
+                  20007eb8    0000004c                           : cpy_tbl.obj (.text)
+                  20007f04    00000048                           : fd_toi_t2.obj (.text)
+                  20007f4c    00000048                           : fd_tos_t2.obj (.text)
+                  20007f94    00000046                           : ldexp.obj (.text)
+                  20007fda    00000002     --HOLE-- [fill = 0]
+                  20007fdc    00000044     driverlib.a : timer.obj (.text:TimerConfigure)
+                  20008020    00000044     rtsv7M4_T_le_eabi.lib : exit.obj (.text)
+                  20008064    00000040     driverlib.a : pin.obj (.text:PinModeSet)
+                  200080a4    00000040     pinmux.obj (.text)
+                  200080e4    00000040     rtsv7M4_T_le_eabi.lib : signal.obj (.text)
+                  20008124    0000003c     driverlib.a : prcm.obj (.text:PRCMPeripheralClkEnable)
+                  20008160    0000003c     rtsv7M4_T_le_eabi.lib : boot.obj (.text)
+                  2000819c    00000036     driverlib.a : timer.obj (.text:TimerControlLevel)
+                  200081d2    00000002     --HOLE-- [fill = 0]
+                  200081d4    00000034     rtsv7M4_T_le_eabi.lib : feraiseexcept.obj (.text)
+                  20008208    00000030     driverlib.a : uart.obj (.text:UARTDisable)
+                  20008238    00000030     rtsv7M4_T_le_eabi.lib : xferaise.obj (.text)
+                  20008268    0000002e                           : i_tofd_t2.obj (.text)
+                  20008296    0000002e                           : raise.obj (.text)
+                  200082c4    0000002c     driverlib.a : prcm.obj (.text:PRCMSysResetCauseGet)
+                  200082f0    0000002a                 : timer.obj (.text:TimerLoadSet)
+                  2000831a    0000002a                 : timer.obj (.text:TimerMatchSet)
+                  20008344    0000002a                 : timer.obj (.text:TimerPrescaleSet)
+                  2000836e    0000002a     rtsv7M4_T_le_eabi.lib : xdclass.obj (.text)
+                  20008398    00000028     driverlib.a : prcm.obj (.text:PRCMPeripheralClkDisable)
+                  200083c0    00000024                 : uart.obj (.text:UARTEnable)
+                  200083e4    00000024     rtsv7M4_T_le_eabi.lib : memmov.obj (.text)
+                  20008408    00000022                           : frexp.obj (.text)
+                  2000842a    0000001e     driverlib.a : timer.obj (.text:TimerDisable)
+                  20008448    0000001e                 : timer.obj (.text:TimerEnable)
+                  20008466    0000001e                 : uart.obj (.text:UARTCharPut)
+                  20008484    0000001c                 : uart.obj (.text:UARTCharGetNonBlocking)
+                  200084a0    0000001c     rtsv7M4_T_le_eabi.lib : memccpy.obj (.text)
+                  200084bc    0000001a     driverlib.a : pin.obj (.text:PinTypeTimer)
+                  200084d6    0000001a                 : pin.obj (.text:PinTypeUART)
+                  200084f0    00000018                 : uart.obj (.text:UARTCharsAvail)
+                  20008508    00000018     rtsv7M4_T_le_eabi.lib : args_main.obj (.text)
+                  20008520    00000018                           : ll_mul_t2.obj (.text)
+                  20008538    00000018                           : strrchr.obj (.text)
+                  20008550    00000016     driverlib.a : prcm.obj (.text:PRCMHIBRegRead)
+                  20008566    00000016                 : prcm.obj (.text:PRCMHIBRegWrite)
+                  2000857c    00000016     rtsv7M4_T_le_eabi.lib : strchr.obj (.text)
+                  20008592    00000014     driverlib.a : cpu.obj (.text:CPUcpsie)
+                  200085a6    00000002     --HOLE-- [fill = 0]
+                  200085a8    00000014                 : interrupt.obj (.text:IntVTableBaseSet)
+                  200085bc    00000014     rtsv7M4_T_le_eabi.lib : _lock.obj (.text)
+                  200085d0    00000014                           : strcpy.obj (.text)
+                  200085e4    00000014                           : strlen.obj (.text)
+                  200085f8    0000000e                           : copy_decompress_none.obj (.text:decompress:none)
+                  20008606    0000000e     startup_ccs.obj (.text)
+                  20008614    0000000c     rtsv7M4_T_le_eabi.lib : copy_zero_init.obj (.text:decompress:ZI)
+                  20008620    0000000a     driverlib.a : interrupt.obj (.text:IntMasterEnable)
+                  2000862a    00000006                 : utils.obj (.text:UtilsDelay)
+                  20008630    00000006     rtsv7M4_T_le_eabi.lib : copy_decompress_rle.obj (.text:decompress:rle24)
+                  20008636    00000004                           : pre_init.obj (.text)
+
+.const     0    20008640    000003d8     
+                  20008640    00000101     rtsv7M4_T_le_eabi.lib : ctype.obj (.const:.string:_ctypes_)
+                  20008741    00000003     --HOLE-- [fill = 0]
+                  20008744    00000100     driverlib.a : pin.obj (.const:g_ulPinToPadMap)
+                  20008844    000000a8                 : prcm.obj (.const:PRCM_PeriphRegsList)
+                  200088ec    00000004     --HOLE-- [fill = 0]
+                  200088f0    00000098     rtsv7M4_T_le_eabi.lib : strtod.obj (.const)
+                  20008988    00000080     driverlib.a : interrupt.obj (.const)
+                  20008a08    00000010     rtsv7M4_T_le_eabi.lib : _scanfi.obj (.const)
+
+.cinit     0    20008a18    00000078     
+                  20008a18    0000004e     (.cinit..data.load) [load image, compression = rle]
+                  20008a66    00000002     --HOLE-- [fill = 0]
+                  20008a68    0000000c     (__TI_handler_table)
+                  20008a74    00000004     --HOLE-- [fill = 0]
+                  20008a78    00000008     (.cinit..bss.load) [load image, compression = zero_init]
+                  20008a80    00000010     (__TI_cinit_table)
+
+.sysmem    0    20017000    00000800     UNINITIALIZED
+                  20017000    00000008     rtsv7M4_T_le_eabi.lib : memory.obj (.sysmem)
+                  20017008    000007f8     --HOLE--
+
+.data      0    20017800    0000015c     UNINITIALIZED
+                  20017800    000000b0     rtsv7M4_T_le_eabi.lib : signal.obj (.data:sigtable)
+                  200178b0    00000080                           : xvalues.obj (.data)
+                  20017930    0000000c                           : memory.obj (.data)
+                  2001793c    00000008                           : _lock.obj (.data)
+                  20017944    00000008                           : exit.obj (.data)
+                  2001794c    00000008                           : feraiseexcept.obj (.data)
+                  20017954    00000004                           : errno.obj (.data)
+                  20017958    00000004                           : stkdepth_vars.obj (.data)
+
+.TI.persistent 
+*          0    20017800    00000000     UNINITIALIZED
+
+.bss       0    2001795c    00000004     UNINITIALIZED
+                  2001795c    00000004     (.common:__Errorlog)
+
+.TI.noinit 
+*          0    2001795c    00000000     UNINITIALIZED
+
+.stack     0    2002f800    00000800     UNINITIALIZED
+                  2002f800    00000800     --HOLE--
+
+
+LINKER GENERATED COPY TABLES
+
+__TI_cinit_table @ 20008a80 records: 2, size/record: 8, table size: 16
+	.data: load addr=20008a18, load size=0000004e bytes, run addr=20017800, run size=0000015c bytes, compression=rle
+	.bss: load addr=20008a78, load size=00000008 bytes, run addr=2001795c, run size=00000004 bytes, compression=zero_init
+
+
+LINKER GENERATED HANDLER TABLE
+
+__TI_handler_table @ 20008a68 records: 3, size/record: 4, table size: 12
+	index: 0, handler: __TI_decompress_rle24
+	index: 1, handler: __TI_decompress_none
+	index: 2, handler: __TI_zero_init
+
+
+GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
+
+address   name                    
+-------   ----                    
+20008021  C$$EXIT                 
+20008593  CPUcpsie                
+200061cd  ClearTerm               
+200066d9  DeInitPWMModules        
+200061d7  Error                   
+2000620f  GetCmd                  
+200066ad  InitPWMModules          
+2000618d  InitTerm                
+2000779d  IntEnable               
+20008621  IntMasterEnable         
+200085a9  IntVTableBaseSet        
+200061ab  Message                 
+20007089  PRCMCC3200MCUInit       
+20008551  PRCMHIBRegRead          
+20008567  PRCMHIBRegWrite         
+20008399  PRCMPeripheralClkDisable
+20008125  PRCMPeripheralClkEnable 
+200078e1  PRCMPeripheralClockGet  
+20007dbd  PRCMPeripheralReset     
+200082c5  PRCMSysResetCauseGet    
+20007975  PinConfigSet            
+20008065  PinModeSet              
+200080a5  PinMuxConfig            
+200084bd  PinTypeTimer            
+200084d7  PinTypeUART             
+2000634f  Report                  
+20008607  ResetISR                
+UNDEFED   SHT$$INIT_ARRAY$$Base   
+UNDEFED   SHT$$INIT_ARRAY$$Limit  
+20006663  SetupTimerPWMMode       
+20007fdd  TimerConfigure          
+2000819d  TimerControlLevel       
+2000842b  TimerDisable            
+20008449  TimerEnable             
+200082f1  TimerLoadSet            
+2000831b  TimerMatchSet           
+20008345  TimerPrescaleSet        
+200062b7  TrimSpace               
+20008485  UARTCharGetNonBlocking  
+20008467  UARTCharPut             
+200084f1  UARTCharsAvail          
+20007c0b  UARTConfigSetExpClk     
+20008209  UARTDisable             
+200083c1  UARTEnable              
+20006645  UpdateDutyCycle         
+2000862b  UtilsDelay              
+2000836f  _Dclass                 
+200178b0  _Denorm                 
+200076dd  _Dnorm                  
+20007405  _Dscale                 
+20007d57  _Dunscale               
+200178c0  _Eps                    
+20017954  _Errno                  
+2001794c  _Fenv                   
+20008239  _Feraise                
+200178d0  _Hugeval                
+200178e0  _Inf                    
+200178f0  _Nan                    
+20017910  _Rteps                  
+20017900  _Snan                   
+20017950  _Tls_setup__Fenv        
+20017920  _Xbig                   
+20017928  _Zero                   
+20030000  __STACK_END             
+00000800  __STACK_SIZE            
+00000800  __SYSMEM_SIZE           
+20008a80  __TI_CINIT_Base         
+20008a90  __TI_CINIT_Limit        
+20008a68  __TI_Handler_Table_Base 
+20008a74  __TI_Handler_Table_Limit
+20007c81  __TI_auto_init          
+20017944  __TI_cleanup_ptr        
+200085f9  __TI_decompress_none    
+20008631  __TI_decompress_rle24   
+20017948  __TI_dtors_ptr          
+200051a1  __TI_printfi            
+20005901  __TI_scanfi             
+20008a18  __TI_static_base__      
+20008615  __TI_zero_init          
+20007a85  __aeabi_cdcmpeq         
+20007a85  __aeabi_cdcmple         
+20007b0b  __aeabi_cdrcmple        
+20007f4d  __aeabi_d2f             
+20007f05  __aeabi_d2iz            
+20006c37  __aeabi_dadd            
+20006f51  __aeabi_ddiv            
+20007515  __aeabi_dmul            
+20006c2d  __aeabi_dsub            
+20008269  __aeabi_i2d             
+20008521  __aeabi_lmul            
+20007b91  __aeabi_memclr          
+20007b91  __aeabi_memclr4         
+20007b91  __aeabi_memclr8         
+20007845  __aeabi_memcpy          
+20007845  __aeabi_memcpy4         
+20007845  __aeabi_memcpy8         
+20007b93  __aeabi_memset          
+20007b93  __aeabi_memset4         
+20007b93  __aeabi_memset8         
+20006855  __aeabi_uldivmod        
+ffffffff  __binit__               
+ffffffff  __c_args__              
+2002f800  __stack                 
+20008509  _args_main              
+20008161  _c_int00                
+20008640  _ctypes_                
+2001793c  _lock                   
+200085cb  _nop                    
+200085c3  _register_lock          
+200085bd  _register_unlock        
+20017000  _sys_memory             
+20008637  _system_pre_init        
+20017940  _unlock                 
+20008025  abort                   
+20007e6d  atoi                    
+ffffffff  binit                   
+20006159  calloc                  
+20007eb9  copy_in                 
+2000802d  exit                    
+200081d5  feraiseexcept           
+20005ea7  free                    
+20008409  frexp                   
+20004000  g_pfnVectors            
+20007f95  ldexp                   
+20007e15  ltoa                    
+20006721  main                    
+20017958  main_func_sp            
+20005e3f  malloc                  
+20006075  memalign                
+200084a1  memccpy                 
+20007845  memcpy                  
+200083e5  memmove                 
+20007b99  memset                  
+20005db1  minit                   
+20008297  raise                   
+20005f69  realloc                 
+200080e5  signal                  
+20007623  sscanf                  
+2000857d  strchr                  
+200085d1  strcpy                  
+200085e5  strlen                  
+20008539  strrchr                 
+2000640d  strtod                  
+200071bd  strtol                  
+2000640d  strtold                 
+20006a49  strtoll                 
+200072f1  strtoul                 
+20006de5  strtoull                
+200079fd  vsnprintf               
+20007611  vsscanf                 
+
+
+GLOBAL SYMBOLS: SORTED BY Symbol Address 
+
+address   name                    
+-------   ----                    
+00000800  __STACK_SIZE            
+00000800  __SYSMEM_SIZE           
+20004000  g_pfnVectors            
+200051a1  __TI_printfi            
+20005901  __TI_scanfi             
+20005db1  minit                   
+20005e3f  malloc                  
+20005ea7  free                    
+20005f69  realloc                 
+20006075  memalign                
+20006159  calloc                  
+2000618d  InitTerm                
+200061ab  Message                 
+200061cd  ClearTerm               
+200061d7  Error                   
+2000620f  GetCmd                  
+200062b7  TrimSpace               
+2000634f  Report                  
+2000640d  strtod                  
+2000640d  strtold                 
+20006645  UpdateDutyCycle         
+20006663  SetupTimerPWMMode       
+200066ad  InitPWMModules          
+200066d9  DeInitPWMModules        
+20006721  main                    
+20006855  __aeabi_uldivmod        
+20006a49  strtoll                 
+20006c2d  __aeabi_dsub            
+20006c37  __aeabi_dadd            
+20006de5  strtoull                
+20006f51  __aeabi_ddiv            
+20007089  PRCMCC3200MCUInit       
+200071bd  strtol                  
+200072f1  strtoul                 
+20007405  _Dscale                 
+20007515  __aeabi_dmul            
+20007611  vsscanf                 
+20007623  sscanf                  
+200076dd  _Dnorm                  
+2000779d  IntEnable               
+20007845  __aeabi_memcpy          
+20007845  __aeabi_memcpy4         
+20007845  __aeabi_memcpy8         
+20007845  memcpy                  
+200078e1  PRCMPeripheralClockGet  
+20007975  PinConfigSet            
+200079fd  vsnprintf               
+20007a85  __aeabi_cdcmpeq         
+20007a85  __aeabi_cdcmple         
+20007b0b  __aeabi_cdrcmple        
+20007b91  __aeabi_memclr          
+20007b91  __aeabi_memclr4         
+20007b91  __aeabi_memclr8         
+20007b93  __aeabi_memset          
+20007b93  __aeabi_memset4         
+20007b93  __aeabi_memset8         
+20007b99  memset                  
+20007c0b  UARTConfigSetExpClk     
+20007c81  __TI_auto_init          
+20007d57  _Dunscale               
+20007dbd  PRCMPeripheralReset     
+20007e15  ltoa                    
+20007e6d  atoi                    
+20007eb9  copy_in                 
+20007f05  __aeabi_d2iz            
+20007f4d  __aeabi_d2f             
+20007f95  ldexp                   
+20007fdd  TimerConfigure          
+20008021  C$$EXIT                 
+20008025  abort                   
+2000802d  exit                    
+20008065  PinModeSet              
+200080a5  PinMuxConfig            
+200080e5  signal                  
+20008125  PRCMPeripheralClkEnable 
+20008161  _c_int00                
+2000819d  TimerControlLevel       
+200081d5  feraiseexcept           
+20008209  UARTDisable             
+20008239  _Feraise                
+20008269  __aeabi_i2d             
+20008297  raise                   
+200082c5  PRCMSysResetCauseGet    
+200082f1  TimerLoadSet            
+2000831b  TimerMatchSet           
+20008345  TimerPrescaleSet        
+2000836f  _Dclass                 
+20008399  PRCMPeripheralClkDisable
+200083c1  UARTEnable              
+200083e5  memmove                 
+20008409  frexp                   
+2000842b  TimerDisable            
+20008449  TimerEnable             
+20008467  UARTCharPut             
+20008485  UARTCharGetNonBlocking  
+200084a1  memccpy                 
+200084bd  PinTypeTimer            
+200084d7  PinTypeUART             
+200084f1  UARTCharsAvail          
+20008509  _args_main              
+20008521  __aeabi_lmul            
+20008539  strrchr                 
+20008551  PRCMHIBRegRead          
+20008567  PRCMHIBRegWrite         
+2000857d  strchr                  
+20008593  CPUcpsie                
+200085a9  IntVTableBaseSet        
+200085bd  _register_unlock        
+200085c3  _register_lock          
+200085cb  _nop                    
+200085d1  strcpy                  
+200085e5  strlen                  
+200085f9  __TI_decompress_none    
+20008607  ResetISR                
+20008615  __TI_zero_init          
+20008621  IntMasterEnable         
+2000862b  UtilsDelay              
+20008631  __TI_decompress_rle24   
+20008637  _system_pre_init        
+20008640  _ctypes_                
+20008a18  __TI_static_base__      
+20008a68  __TI_Handler_Table_Base 
+20008a74  __TI_Handler_Table_Limit
+20008a80  __TI_CINIT_Base         
+20008a90  __TI_CINIT_Limit        
+20017000  _sys_memory             
+200178b0  _Denorm                 
+200178c0  _Eps                    
+200178d0  _Hugeval                
+200178e0  _Inf                    
+200178f0  _Nan                    
+20017900  _Snan                   
+20017910  _Rteps                  
+20017920  _Xbig                   
+20017928  _Zero                   
+2001793c  _lock                   
+20017940  _unlock                 
+20017944  __TI_cleanup_ptr        
+20017948  __TI_dtors_ptr          
+2001794c  _Fenv                   
+20017950  _Tls_setup__Fenv        
+20017954  _Errno                  
+20017958  main_func_sp            
+2002f800  __stack                 
+20030000  __STACK_END             
+ffffffff  __binit__               
+ffffffff  __c_args__              
+ffffffff  binit                   
+UNDEFED   SHT$$INIT_ARRAY$$Base   
+UNDEFED   SHT$$INIT_ARRAY$$Limit  
+
+[150 symbols]

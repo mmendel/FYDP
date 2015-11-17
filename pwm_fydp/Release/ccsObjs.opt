@@ -1,0 +1,1 @@
+"./adc_user.obj" "./main.obj" "./pinmux.obj" "./sma.obj" "./sma_controller.obj" "./startup_ccs.obj" "./uart_if.obj" "../cc3200v1p32.cmd" -l"libc.a" -ldriverlib.a 
