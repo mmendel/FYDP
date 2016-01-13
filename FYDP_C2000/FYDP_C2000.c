@@ -31,6 +31,7 @@ void scia_init(void);
 void scia_fifo_init(void);
 void scia_xmit(int a);
 void scia_msg(char * msg);
+void scia_float_xmit(float32 f);
 
 // Global variables
 ADC_Handle myAdc;
@@ -47,6 +48,7 @@ void main(void)
     PLL_Handle myPll;
     WDOG_Handle myWDog;
     uint16_t adc_val;
+    float32 volt;
 
     // Initialize all the handles needed for this application
     myAdc = ADC_init((void *)ADC_BASE_ADDR, sizeof(ADC_Obj));
@@ -141,7 +143,9 @@ void main(void)
         //Get ADC val
         adc_val =  ADC_readResult(myAdc, ADC_ResultNumber_0);
 
-        scia_xmit(adc_val);
+        volt = (3.3/4095)*adc_val;
+        //scia_xmit(adc_val);
+        scia_float_xmit(volt);
     }
 }
 
@@ -275,6 +279,40 @@ void scia_msg(char * msg)
         i++;
     }
 }
+
+void scia_float_xmit(float f)
+{
+	int *p;
+	char a1,a2,a3,a4;
+	uint16_t temp;
+    p = (int *)&f;
+
+    a1=__byte(p,3); // HIGH byte - byte 4
+
+    a2=__byte(p,2); // byte 3
+
+    a3=__byte(p,1); // byte 2
+
+    a4=__byte(p,0); // LOW byte - byte 1
+    scia_msg(":");
+    scia_xmit(a1);
+    scia_xmit(a2);
+    scia_xmit(a3);
+    scia_xmit(a4);
+   /* while (SciaRegs.SCIFFTX.bit.TXFFST != 0) {}
+    SciaRegs.SCITXBUF=a1;
+    while (SciaRegs.SCIFFTX.bit.TXFFST != 0) {}
+    SciaRegs.SCITXBUF=a2;
+    while (SciaRegs.SCIFFTX.bit.TXFFST != 0) {}
+    SciaRegs.SCITXBUF=a3;
+    while (SciaRegs.SCIFFTX.bit.TXFFST != 0) {}
+    SciaRegs.SCITXBUF=a4;*/
+    scia_msg("\r\n");
+
+
+}
+
+
 //===========================================================================
 // No more.
 //===========================================================================
