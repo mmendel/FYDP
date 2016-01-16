@@ -15,7 +15,6 @@ def my_print(text):
 
 
 def main():
-	print "start" 
 	ser = serial.Serial(port)
 	ydata = [0]*100
 	plt.ion()
@@ -24,7 +23,9 @@ def main():
 	line1, = ax.plot(ydata)
 	ax.set_ylim([0,4])
 	plt.show()
-	plt.pause(0.0001)
+	fig.canvas.draw()
+	plt.pause(3)
+	ser.flush()
 	while 1:
 		line = ser.readline()
 
@@ -33,20 +34,17 @@ def main():
 			line = line.replace("\r\n", "")
 			try:
 				val = struct.unpack('>f', line)[0]
-				my_print(val)
-				ydata.append(val)
-				del ydata[0]
-				#line1.set_xdata(np.arrange(len(ydata)))
-				line1.set_ydata(ydata)
-				fig.canvas.draw()
-				plt.pause(0.0001)
+				#my_print(val)
 			except:
 				pass
+				
+			ydata.append(val)
+			del ydata[0]
+			#line1.set_xdata(np.arrange(len(ydata)))
+			line1.set_ydata(ydata)
+			plt.pause(0.0001)
 		else:
 			my_print(line)
-	line1.set_ydata(ydata)
-	fig.canvas.draw()
-	plt.pause(3)
 
 if __name__ == "__main__":
 	main()
