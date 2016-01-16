@@ -26,7 +26,7 @@
 // Prototype statements for functions found within this file.
 __interrupt void sciaRxFifoIsr(void);
 void adc_init(void);
-void pwm_init(void);
+void pwm_init(PWM_Handle myPwm);
 void scia_init(void);
 void scia_fifo_init(void);
 void scia_xmit(int a);
@@ -40,9 +40,10 @@ FLASH_Handle myFlash;
 GPIO_Handle myGpio;
 PIE_Handle myPie;
 SCI_Handle mySci;
-PWM_Handle myPwm1;
+PWM_Handle myPwm1, myPwm2, myPwm3, myPwm4;
 
 volatile uint16_t commandData [5] = {0,0,0,0,0};
+#define PWMPER 2000
 
 void main(void)
 {
@@ -61,6 +62,9 @@ void main(void)
     myPie = PIE_init((void *)PIE_BASE_ADDR, sizeof(PIE_Obj));
     myPll = PLL_init((void *)PLL_BASE_ADDR, sizeof(PLL_Obj));
     myPwm1 = PWM_init((void *)PWM_ePWM1_BASE_ADDR, sizeof(PWM_Obj));
+    myPwm2 = PWM_init((void *)PWM_ePWM2_BASE_ADDR, sizeof(PWM_Obj));
+    myPwm3 = PWM_init((void *)PWM_ePWM3_BASE_ADDR, sizeof(PWM_Obj));
+    myPwm4 = PWM_init((void *)PWM_ePWM4_BASE_ADDR, sizeof(PWM_Obj));
     mySci = SCI_init((void *)SCIA_BASE_ADDR, sizeof(SCI_Obj));
     myWDog = WDOG_init((void *)WDOG_BASE_ADDR, sizeof(WDOG_Obj));
 
@@ -87,10 +91,29 @@ void main(void)
 #endif
 
     // Initialize GPIO
+
+    // PWM GPIO
     GPIO_setPullUp(myGpio, GPIO_Number_0, GPIO_PullUp_Disable);
+    GPIO_setPullUp(myGpio, GPIO_Number_1, GPIO_PullUp_Disable);
+    GPIO_setPullUp(myGpio, GPIO_Number_2, GPIO_PullUp_Disable);
+    GPIO_setPullUp(myGpio, GPIO_Number_3, GPIO_PullUp_Disable);
+    GPIO_setPullUp(myGpio, GPIO_Number_4, GPIO_PullUp_Disable);
+    GPIO_setPullUp(myGpio, GPIO_Number_5, GPIO_PullUp_Disable);
+    GPIO_setPullUp(myGpio, GPIO_Number_6, GPIO_PullUp_Disable);
+    GPIO_setPullUp(myGpio, GPIO_Number_7, GPIO_PullUp_Disable);
+
+    GPIO_setMode(myGpio, GPIO_Number_0, GPIO_0_Mode_EPWM1A);
+    GPIO_setMode(myGpio, GPIO_Number_1, GPIO_1_Mode_EPWM1B);
+    GPIO_setMode(myGpio, GPIO_Number_2, GPIO_2_Mode_EPWM2A);
+    GPIO_setMode(myGpio, GPIO_Number_3, GPIO_3_Mode_EPWM2B);
+    GPIO_setMode(myGpio, GPIO_Number_4, GPIO_4_Mode_EPWM3A);
+    GPIO_setMode(myGpio, GPIO_Number_5, GPIO_5_Mode_EPWM3B);
+    GPIO_setMode(myGpio, GPIO_Number_6, GPIO_6_Mode_EPWM4A);
+    GPIO_setMode(myGpio, GPIO_Number_7, GPIO_7_Mode_EPWM4B);
+
+    //SCI GPIO
     GPIO_setPullUp(myGpio, GPIO_Number_28, GPIO_PullUp_Enable);
     GPIO_setPullUp(myGpio, GPIO_Number_29, GPIO_PullUp_Disable);
-    GPIO_setMode(myGpio, GPIO_Number_0, GPIO_0_Mode_EPWM1A);
     GPIO_setQualification(myGpio, GPIO_Number_28, GPIO_Qual_ASync);
     GPIO_setMode(myGpio, GPIO_Number_28, GPIO_28_Mode_SCIRXDA);
     GPIO_setMode(myGpio, GPIO_Number_29, GPIO_29_Mode_SCITXDA);
@@ -118,7 +141,20 @@ void main(void)
     adc_init();
 
 	//Init PWM
-    pwm_init();
+    CLK_disableTbClockSync(myClk);
+    CLK_enablePwmClock(myClk, PWM_Number_1);
+    CLK_enablePwmClock(myClk, PWM_Number_2);
+    CLK_enablePwmClock(myClk, PWM_Number_3);
+    CLK_enablePwmClock(myClk, PWM_Number_4);
+    CLK_enablePwmClock(myClk, PWM_Number_5);
+    CLK_enablePwmClock(myClk, PWM_Number_6);
+    CLK_enablePwmClock(myClk, PWM_Number_7);
+    pwm_init(myPwm1);
+    pwm_init(myPwm2);
+    pwm_init(myPwm3);
+    pwm_init(myPwm4);
+    CLK_enableTbClockSync(myClk);
+
 
     // Enable interrupts required for this example
     PIE_enableInt(myPie, PIE_GroupNumber_9, PIE_InterruptSource_SCIARX);
@@ -190,33 +226,76 @@ void adc_init()
 
 	ADC_enableInt(myAdc, ADC_IntNumber_1);                                  		//Enable ADCINT1
 	ADC_setIntMode(myAdc, ADC_IntNumber_1, ADC_IntMode_ClearFlag);          		//Disable ADCINT1 Continuous mode
-	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_0, ADC_SocTrigSrc_Sw);    				//set SOC0 start trigger on EPWM1A, due to round-robin SOC0 converts first then SOC1
-	ADC_setSocChanNumber (myAdc, ADC_SocNumber_0, ADC_SocChanNumber_A4);    		//Set SOC0 channel select to ADCINA5
-	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_0, ADC_SocSampleWindow_7_cycles);   //Set SOC0 acquisition period to 7 ADCCLK
+
+	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_0, ADC_SocTrigSrc_Sw);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_0, ADC_SocChanNumber_A1);
+	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_0, ADC_SocSampleWindow_7_cycles);
+
+	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_1, ADC_SocTrigSrc_Sw);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_1, ADC_SocChanNumber_A2);
+	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_1, ADC_SocSampleWindow_7_cycles);
+
+	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_2, ADC_SocTrigSrc_Sw);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_2, ADC_SocChanNumber_A3);
+	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_2, ADC_SocSampleWindow_7_cycles);
+
+	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_3, ADC_SocTrigSrc_Sw);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_3, ADC_SocChanNumber_A4);
+	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_3, ADC_SocSampleWindow_7_cycles);
+
+	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_4, ADC_SocTrigSrc_Sw);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_4, ADC_SocChanNumber_A5);
+	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_4, ADC_SocSampleWindow_7_cycles);
+
+	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_5, ADC_SocTrigSrc_Sw);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_5, ADC_SocChanNumber_A6);
+	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_5, ADC_SocSampleWindow_7_cycles);
+
+	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_6, ADC_SocTrigSrc_Sw);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_6, ADC_SocChanNumber_A7);
+	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_6, ADC_SocSampleWindow_7_cycles);
+
+	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_7, ADC_SocTrigSrc_Sw);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_7, ADC_SocChanNumber_B1);
+	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_7, ADC_SocSampleWindow_7_cycles);
+
+	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_8, ADC_SocTrigSrc_Sw);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_8, ADC_SocChanNumber_B2);
+	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_8, ADC_SocSampleWindow_7_cycles);
+
+	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_9, ADC_SocTrigSrc_Sw);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_9, ADC_SocChanNumber_B3);
+	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_9, ADC_SocSampleWindow_7_cycles);
+
+	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_10, ADC_SocTrigSrc_Sw);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_10, ADC_SocChanNumber_B4);
+	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_10, ADC_SocSampleWindow_7_cycles);
+
+	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_11, ADC_SocTrigSrc_Sw);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_12, ADC_SocChanNumber_B5);
+	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_13, ADC_SocSampleWindow_7_cycles);
 }
 
-void pwm_init()
+void pwm_init(PWM_Handle myPwm)
 {
-    CLK_disableTbClockSync(myClk);
-
-    CLK_enablePwmClock(myClk, PWM_Number_1);
-
     // Setup TBCLK
-    PWM_setCounterMode(myPwm1, PWM_CounterMode_Up);         // Count up
-    PWM_setPeriod(myPwm1, 2000);              			    // Set timer period
-    PWM_disableCounterLoad(myPwm1);                         // Disable phase loading
-    PWM_setPhase(myPwm1, 0x0000);                           // Phase is 0
-    PWM_setCount(myPwm1, 0x0000);                           // Clear counter
-    PWM_setHighSpeedClkDiv(myPwm1, PWM_HspClkDiv_by_2);     // Clock ratio to SYSCLKOUT
-    PWM_setClkDiv(myPwm1, PWM_ClkDiv_by_2);
+    PWM_setCounterMode(myPwm, PWM_CounterMode_Up);         // Count up
+    PWM_setPeriod(myPwm, PWMPER);              			// Set timer period
+    PWM_disableCounterLoad(myPwm);                         // Disable phase loading
+    PWM_setPhase(myPwm, 0x0000);                           // Phase is 0
+    PWM_setCount(myPwm, 0x0000);                           // Clear counter
+    PWM_setHighSpeedClkDiv(myPwm, PWM_HspClkDiv_by_2);     // Clock ratio to SYSCLKOUT
+    PWM_setClkDiv(myPwm, PWM_ClkDiv_by_2);
 
     // Set Compare values
-    PWM_setCmpA(myPwm1, 400);    // Set compare A value
+    PWM_setCmpA(myPwm, 0);    // Set compare B value
+    PWM_setCmpB(myPwm, 0);    // Set compare B value
 
     // Set actions
-    PWM_setActionQual_Zero_PwmA(myPwm1, PWM_ActionQual_Set);            // Set PWM1A on Zero
-    PWM_setActionQual_CntUp_CmpA_PwmA(myPwm1, PWM_ActionQual_Clear);    // Clear PWM1A on event A, up count
-    CLK_enableTbClockSync(myClk);
+    PWM_setActionQual_Zero_PwmA(myPwm, PWM_ActionQual_Set);            // Set PWM1A on Zero
+    PWM_setActionQual_CntUp_CmpA_PwmA(myPwm, PWM_ActionQual_Clear);    // Clear PWM1A on event A, up count
+    PWM_setActionQual_Zero_PwmB(myPwm, PWM_ActionQual_Set);            // Set PWM1B on Zero
+    PWM_setActionQual_CntUp_CmpB_PwmB(myPwm, PWM_ActionQual_Clear);    // Clear PWM1B on event B, up count
 }
 
 void scia_init()
