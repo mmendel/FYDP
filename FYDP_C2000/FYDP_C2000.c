@@ -42,6 +42,8 @@ PIE_Handle myPie;
 SCI_Handle mySci;
 PWM_Handle myPwm1;
 
+volatile uint16_t commandData [5] = {0,0,0,0,0};
+
 void main(void)
 {
     CPU_Handle myCpu;
@@ -151,11 +153,19 @@ void main(void)
 
 __interrupt void sciaRxFifoIsr(void)
 {
-   uint16_t dataRec;
-
+	//Command Strucutre is as follows
+	//BYTE 1 = ':' -> Beggining of command
+	//BYTE 2 = Command ID
+	//BYTE 3 = Finger (Upper 4 Bits) Joint (lower 4 Bits)
+	//BYTE 4 = Value (uint)
     if(SCI_getRxFifoStatus(mySci) != SCI_FifoLevel_Empty)
     {
-    	dataRec = SCI_getData(mySci);
+    	commandData[0] = SCI_getData(mySci) == ':';
+    	commandData[1] = SCI_getData(mySci);
+    	commandData[2] = SCI_getData(mySci);
+    	commandData[3] = commandData[2] & 0xF;
+    	commandData[2] = commandData[2] >> 4;
+    	commandData[4] = SCI_getData(mySci);
     }
 
     // Clear Overflow flag
@@ -254,7 +264,7 @@ void scia_fifo_init()
 
     SCI_resetRxFifo(mySci);
     SCI_clearRxFifoInt(mySci);
-    SCI_setRxFifoIntLevel(mySci, SCI_FifoLevel_1_Word);
+    SCI_setRxFifoIntLevel(mySci, SCI_FifoLevel_4_Words);
     SCI_enableRxFifoInt(mySci);
 
     return;
@@ -284,7 +294,6 @@ void scia_float_xmit(float f)
 {
 	int *p;
 	char a1,a2,a3,a4;
-	uint16_t temp;
     p = (int *)&f;
 
     a1=__byte(p,3); // HIGH byte - byte 4
@@ -299,14 +308,6 @@ void scia_float_xmit(float f)
     scia_xmit(a2);
     scia_xmit(a3);
     scia_xmit(a4);
-   /* while (SciaRegs.SCIFFTX.bit.TXFFST != 0) {}
-    SciaRegs.SCITXBUF=a1;
-    while (SciaRegs.SCIFFTX.bit.TXFFST != 0) {}
-    SciaRegs.SCITXBUF=a2;
-    while (SciaRegs.SCIFFTX.bit.TXFFST != 0) {}
-    SciaRegs.SCITXBUF=a3;
-    while (SciaRegs.SCIFFTX.bit.TXFFST != 0) {}
-    SciaRegs.SCITXBUF=a4;*/
     scia_msg("\r\n");
 
 
