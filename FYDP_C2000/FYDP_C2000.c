@@ -122,8 +122,8 @@ void main(void)
     PIE_setDebugIntVectorTable(myPie);
     PIE_enable(myPie);
 
-// Interrupts that are used in this example are re-mapped to
-// ISR functions found within this file.
+    // Interrupts that are used in this example are re-mapped to
+    // ISR functions found within this file.
     EALLOW;    // This is needed to write to EALLOW protected registers
     PieVectTable.SCIRXINTA = &sciaRxFifoIsr;
     ((PIE_Obj *)myPie)->SCIRXINTA = &sciaRxFifoIsr;
@@ -388,8 +388,6 @@ void scia_float_xmit(float f)
     scia_xmit(a3);
     scia_xmit(a4);
     scia_msg("\r\n");
-
-
 }
 
 
