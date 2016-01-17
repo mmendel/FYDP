@@ -22,6 +22,9 @@
 #include "f2802x_common/include/sci.h"
 #include "f2802x_common/include/wdog.h"
 
+#include "sma.h"
+#include "sma_controller.h"
+
 
 // Prototype statements for functions found within this file.
 __interrupt void sciaRxFifoIsr(void);
@@ -32,6 +35,9 @@ void scia_fifo_init(void);
 void scia_xmit(int a);
 void scia_msg(char * msg);
 void scia_float_xmit(float32 f);
+void smaUpdate(SMA *sma);
+void processCommand();
+void setPWM(unsigned char pin, float dutypercent);
 
 // Global variables
 ADC_Handle myAdc;
@@ -43,15 +49,40 @@ SCI_Handle mySci;
 PWM_Handle myPwm1, myPwm2, myPwm3, myPwm4;
 
 volatile uint16_t commandData [5] = {0,0,0,0,0};
-#define PWMPER 2000
+volatile bool running = false;
+Finger hand[5];
+uint16_t adc_val;
+float32 angle;
+float32 duty_cycle;
+
+
+#define SAMPLE_TIME 500000
+#define CHECK_COMMAND_FREQ 2
+#define PWM_PER 2000
+#define PWM_DUTY_PERCENT_TO_TICK(x) (x*PWM_PER)/100
+#define PWM_DUTY_TICK_TO_PERCENT(x) (x*100)/PWM_PER
+#define ADC_TICKS_TO_VOLT(x) (3.3/4095)*x
+
+
+//Commands
+typedef enum
+{
+	STOPALL = 1,
+	STARTALL,
+	SETFINGER,
+	GETFINGER,
+	STREAMSTART,
+	STREAMSTOP
+} Commands;
+
 
 void main(void)
 {
+	uint16_t i;
+	uint32_t j;
     CPU_Handle myCpu;
     PLL_Handle myPll;
     WDOG_Handle myWDog;
-    uint16_t adc_val;
-    float32 volt;
 
     // Initialize all the handles needed for this application
     myAdc = ADC_init((void *)ADC_BASE_ADDR, sizeof(ADC_Obj));
@@ -162,28 +193,33 @@ void main(void)
     CPU_enableInt(myCpu, CPU_IntNumber_9);
     CPU_enableGlobalInts(myCpu);
 
+    InitializeHand(hand);
+
+
 	scia_msg("\r\nWelcome to the deXassist system");
 	scia_msg("\r\nRemember as always, safety is of utmost importance :)");
 
 	for(;;)
     {
-    	DELAY_US(500000);
+    	for (j = 0; j < SAMPLE_TIME/CHECK_COMMAND_FREQ; j++)
+    	{
+        	//If there is a waiting command process it
+    		if (commandData[0] == 1)
+    			processCommand();
 
-        //Force start of conversion on SOC0
-        ADC_forceConversion(myAdc, ADC_SocNumber_0);
-        //Wait for end of conversion.
-        while(ADC_getIntStatus(myAdc, ADC_IntNumber_1) == 0) {
-        }
+    		DELAY_US(CHECK_COMMAND_FREQ);
+    	}
+    	if (running == false)
+    		continue;
 
-        // Clear ADCINT1
-        ADC_clearIntFlag(myAdc, ADC_IntNumber_1);
-
-        //Get ADC val
-        adc_val =  ADC_readResult(myAdc, ADC_ResultNumber_0);
-
-        volt = (3.3/4095)*adc_val;
-        //scia_xmit(adc_val);
-        scia_float_xmit(volt);
+    	//Configure for only one finger
+    	for (i = 0; i < 1; i ++)
+    	{
+    		smaUpdate(hand[i].pip);
+    		//Disable the MCP joint
+    		//smaUpdate(hand[i].mcpv);
+    		//smaUpdate(hand[i].mcph);
+    	}
     }
 }
 
@@ -280,7 +316,7 @@ void pwm_init(PWM_Handle myPwm)
 {
     // Setup TBCLK
     PWM_setCounterMode(myPwm, PWM_CounterMode_Up);         // Count up
-    PWM_setPeriod(myPwm, PWMPER);              			// Set timer period
+    PWM_setPeriod(myPwm, PWM_PER);              			// Set timer period
     PWM_disableCounterLoad(myPwm);                         // Disable phase loading
     PWM_setPhase(myPwm, 0x0000);                           // Phase is 0
     PWM_setCount(myPwm, 0x0000);                           // Clear counter
@@ -388,6 +424,106 @@ void scia_float_xmit(float f)
     scia_xmit(a3);
     scia_xmit(a4);
     scia_msg("\r\n");
+}
+
+void smaUpdate(SMA *sma)
+{
+    //Force start of conversion
+    ADC_forceConversion(myAdc, sma->uADCPin);
+    //Wait for end of conversion.
+    while(ADC_getIntStatus(myAdc, ADC_IntNumber_1) == 0) {
+    }
+    // Clear ADCINT1
+    ADC_clearIntFlag(myAdc, ADC_IntNumber_1);
+    //Get ADC val
+    adc_val =  ADC_readResult(myAdc, sma->uADCPin);
+    angle = VOLTAGE_TO_ANGLE(ADC_TICKS_TO_VOLT(adc_val));
+
+    if (sma->stream == true)
+    	scia_float_xmit(angle);
+
+    duty_cycle = ControllerStep(sma, angle);
+    setPWM(sma->uPwm, duty_cycle);
+}
+
+void setPWM(unsigned char pin, float dutypercent)
+{
+	if (dutypercent < 0)
+		dutypercent = 0;
+	else if (dutypercent > 100)
+		dutypercent = 100;
+
+	uint16_t ticks = PWM_DUTY_PERCENT_TO_TICK(dutypercent);
+
+	switch (pin)
+	{
+		case 0:
+		    PWM_setCmpA(myPwm1, ticks);
+			break;
+		case 1:
+		    PWM_setCmpB(myPwm1, ticks);
+			break;
+		case 2:
+			PWM_setCmpA(myPwm2, ticks);
+			break;
+		case 3:
+			PWM_setCmpB(myPwm2, ticks);
+			break;
+		case 4:
+			PWM_setCmpA(myPwm3, ticks);
+			break;
+		case 5:
+			PWM_setCmpB(myPwm3, ticks);
+			break;
+		case 6:
+			PWM_setCmpA(myPwm4, ticks);
+			break;
+		case 7:
+			PWM_setCmpB(myPwm4, ticks);
+			break;
+		default:
+			break;
+	}
+}
+
+void processCommand()
+{
+	uint16_t ref;
+	switch (commandData[1])
+	{
+		case STOPALL:
+			running = false;
+		    PWM_setCmpA(myPwm1, 0);
+		    PWM_setCmpB(myPwm1, 0);
+		    PWM_setCmpA(myPwm2, 0);
+		    PWM_setCmpB(myPwm2, 0);
+		    PWM_setCmpA(myPwm3, 0);
+		    PWM_setCmpB(myPwm3, 0);
+		    PWM_setCmpA(myPwm4, 0);
+		    PWM_setCmpB(myPwm4, 0);
+			break;
+		case STARTALL:
+			running = true;
+			break;
+		case SETFINGER:
+			SetReference(hand, commandData[2], commandData[3], commandData[4]);
+			break;
+		case GETFINGER:
+			ref = GetReference(hand, commandData[2], commandData[3]);
+			scia_xmit(ref);
+			break;
+		case STREAMSTART:
+			DataStreamStart(hand, commandData[2], commandData[3]);
+			break;
+		case STREAMSTOP:
+			DataStreamStop(hand, commandData[2], commandData[3]);
+			break;
+		default:
+			break;
+
+	}
+
+	commandData[0] = 0;
 }
 
 
