@@ -3,4 +3,5 @@
 <projectOptions>
 	<deviceFamily value="C2000"/>
 	<origin value="C:/ti/controlSUITE/device_support/f2802x/v230/f2802x_examples_drivers/scia_loopback_interrupts"/>
+	<isTargetManual value="false"/>
 </projectOptions>
