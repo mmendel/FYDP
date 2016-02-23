@@ -56,7 +56,7 @@ float32 angle;
 float32 duty_cycle;
 
 
-#define SAMPLE_TIME 500000
+#define SAMPLE_TIME 10000//500000
 #define CHECK_COMMAND_FREQ 2
 #define PWM_PER 2000
 #define PWM_DUTY_PERCENT_TO_TICK(x) (x*PWM_PER)/100
@@ -280,35 +280,35 @@ void adc_init()
 	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_3, ADC_SocSampleWindow_7_cycles);
 
 	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_4, ADC_SocTrigSrc_Sw);
-	ADC_setSocChanNumber (myAdc, ADC_SocNumber_4, ADC_SocChanNumber_A5);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_4, ADC_SocChanNumber_A6);
 	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_4, ADC_SocSampleWindow_7_cycles);
 
 	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_5, ADC_SocTrigSrc_Sw);
-	ADC_setSocChanNumber (myAdc, ADC_SocNumber_5, ADC_SocChanNumber_A6);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_5, ADC_SocChanNumber_A7);
 	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_5, ADC_SocSampleWindow_7_cycles);
 
 	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_6, ADC_SocTrigSrc_Sw);
-	ADC_setSocChanNumber (myAdc, ADC_SocNumber_6, ADC_SocChanNumber_A7);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_6, ADC_SocChanNumber_B1);
 	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_6, ADC_SocSampleWindow_7_cycles);
 
 	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_7, ADC_SocTrigSrc_Sw);
-	ADC_setSocChanNumber (myAdc, ADC_SocNumber_7, ADC_SocChanNumber_B1);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_7, ADC_SocChanNumber_B2);
 	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_7, ADC_SocSampleWindow_7_cycles);
 
 	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_8, ADC_SocTrigSrc_Sw);
-	ADC_setSocChanNumber (myAdc, ADC_SocNumber_8, ADC_SocChanNumber_B2);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_8, ADC_SocChanNumber_B3);
 	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_8, ADC_SocSampleWindow_7_cycles);
 
 	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_9, ADC_SocTrigSrc_Sw);
-	ADC_setSocChanNumber (myAdc, ADC_SocNumber_9, ADC_SocChanNumber_B3);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_9, ADC_SocChanNumber_B4);
 	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_9, ADC_SocSampleWindow_7_cycles);
 
 	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_10, ADC_SocTrigSrc_Sw);
-	ADC_setSocChanNumber (myAdc, ADC_SocNumber_10, ADC_SocChanNumber_B4);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_10, ADC_SocChanNumber_B6);
 	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_10, ADC_SocSampleWindow_7_cycles);
 
 	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_11, ADC_SocTrigSrc_Sw);
-	ADC_setSocChanNumber (myAdc, ADC_SocNumber_12, ADC_SocChanNumber_B5);
+	ADC_setSocChanNumber (myAdc, ADC_SocNumber_12, ADC_SocChanNumber_B7);
 	ADC_setSocSampleWindow(myAdc, ADC_SocNumber_13, ADC_SocSampleWindow_7_cycles);
 }
 
