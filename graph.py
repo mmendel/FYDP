@@ -21,7 +21,7 @@ def main():
 	fig = plt.figure()
 	ax = fig.add_subplot(111)
 	line1, = ax.plot(ydata)
-	ax.set_ylim([0,4])
+	ax.set_ylim([0,100])
 	plt.show()
 	fig.canvas.draw()
 	plt.pause(3)
