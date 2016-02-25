@@ -24,7 +24,7 @@
 
 #include "sma.h"
 #include "sma_controller.h"
-
+#include "LED.h"
 
 // Prototype statements for functions found within this file.
 __interrupt void sciaRxFifoIsr(void);
@@ -148,6 +148,10 @@ void main(void)
     GPIO_setQualification(myGpio, GPIO_Number_28, GPIO_Qual_ASync);
     GPIO_setMode(myGpio, GPIO_Number_28, GPIO_28_Mode_SCIRXDA);
     GPIO_setMode(myGpio, GPIO_Number_29, GPIO_29_Mode_SCITXDA);
+
+    //LED
+    ConfigureLeds(myGpio);
+    SetLedState(POWER, ON);
 
     // Setup a debug vector table and enable the PIE
     PIE_setDebugIntVectorTable(myPie);
@@ -503,9 +507,11 @@ void processCommand()
 		    PWM_setCmpB(myPwm3, 0);
 		    PWM_setCmpA(myPwm4, 0);
 		    PWM_setCmpB(myPwm4, 0);
+		    SetLedState(RUNNING, OFF);
 			break;
 		case STARTALL:
 			running = true;
+			SetLedState(RUNNING, ON);
 			break;
 		case SETFINGER:
 			SetReference(hand, commandData[2], commandData[3], commandData[4]);
@@ -516,9 +522,11 @@ void processCommand()
 			break;
 		case STREAMSTART:
 			DataStreamStart(hand, commandData[2], commandData[3]);
+			SetLedState(STREAM, ON);
 			break;
 		case STREAMSTOP:
 			DataStreamStop(hand, commandData[2], commandData[3]);
+			SetLedState(STREAM, OFF);
 			break;
 		default:
 			break;

@@ -7,6 +7,7 @@
 
 #include "LED.h"
 
+GPIO_Handle myGpioCopy;
 
 void ConfigureLeds(GPIO_Handle myGpioIn)
 {

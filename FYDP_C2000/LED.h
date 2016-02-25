@@ -21,8 +21,6 @@
 #define ON			1
 #define OFF			6
 
-GPIO_Handle myGpioCopy;
-
 void ConfigureLeds(GPIO_Handle myGpio);
 void SetLedState(int led, int state);
 
