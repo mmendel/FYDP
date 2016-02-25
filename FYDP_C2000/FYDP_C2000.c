@@ -28,6 +28,8 @@
 
 // Prototype statements for functions found within this file.
 __interrupt void sciaRxFifoIsr(void);
+__interrupt void deadman_isr(void);
+
 void adc_init(void);
 void pwm_init(PWM_Handle myPwm);
 void scia_init(void);
@@ -50,6 +52,7 @@ PWM_Handle myPwm1, myPwm2, myPwm3, myPwm4;
 
 volatile uint16_t commandData [5] = {0,0,0,0,0};
 volatile bool running = false;
+volatile bool deadman = false;
 Finger hand[5];
 uint16_t adc_val;
 float32 angle;
@@ -149,6 +152,14 @@ void main(void)
     GPIO_setMode(myGpio, GPIO_Number_28, GPIO_28_Mode_SCIRXDA);
     GPIO_setMode(myGpio, GPIO_Number_29, GPIO_29_Mode_SCITXDA);
 
+    //Deadman
+    GPIO_setPullUp(myGpio, GPIO_Number_12, GPIO_PullUp_Enable);
+    GPIO_setMode(myGpio, GPIO_Number_12, GPIO_12_Mode_GeneralPurpose);
+    GPIO_setDirection(myGpio, GPIO_Number_12, GPIO_Direction_Input);
+    GPIO_setQualification(myGpio, GPIO_Number_12, GPIO_Qual_Sample_6);
+    GPIO_setQualificationPeriod(myGpio, GPIO_Number_12, 0xFF);
+    GPIO_setExtInt(myGpio, GPIO_Number_12, CPU_ExtIntNumber_1);
+
     //LED
     ConfigureLeds(myGpio);
     SetLedState(POWER, ON);
@@ -167,6 +178,14 @@ void main(void)
     // Register interrupt handlers in the PIE vector table
     PIE_registerPieIntHandler(myPie, PIE_GroupNumber_9, PIE_SubGroupNumber_1,
                               (intVec_t)&sciaRxFifoIsr);
+
+    //Deadman Interrupt
+    PIE_registerPieIntHandler(myPie, PIE_GroupNumber_1, PIE_SubGroupNumber_4, (intVec_t)&deadman_isr);
+    PIE_enableInt(myPie, PIE_GroupNumber_1, PIE_InterruptSource_XINT_1);
+    CPU_enableInt(myCpu, CPU_IntNumber_1);
+    PIE_setExtIntPolarity(myPie, CPU_ExtIntNumber_1, PIE_ExtIntPolarity_RisingAndFallingEdge);
+    PIE_enableExtInt(myPie, CPU_ExtIntNumber_1);
+
 
     //Init SCIA
     scia_init();        // Init SCI-A
@@ -256,6 +275,24 @@ __interrupt void sciaRxFifoIsr(void)
     PIE_clearInt(myPie, PIE_GroupNumber_9);
 
     return;
+}
+
+__interrupt void deadman_isr(void)
+{
+	uint16_t value = GPIO_getData(myGpio, GPIO_Number_12);
+
+	if (value == 0)
+	{
+		deadman = true;
+		SetLedState(DEADMAN, ON);
+	}
+	else
+	{
+		deadman = false;
+		SetLedState(DEADMAN, OFF);
+	}
+
+    PIE_clearInt(myPie, PIE_GroupNumber_1);
 }
 
 void adc_init()

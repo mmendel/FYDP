@@ -17,7 +17,7 @@ void ConfigureLeds(GPIO_Handle myGpioIn)
     GPIO_setMode(myGpioCopy, POWER, 0);
     GPIO_setMode(myGpioCopy, RUNNING, 0);
     GPIO_setMode(myGpioCopy, ERROR, 0);
-    GPIO_setMode(myGpioCopy, KILLSWITCH, 0);
+    GPIO_setMode(myGpioCopy, DEADMAN, 0);
     GPIO_setMode(myGpioCopy, STREAM, 0);
     GPIO_setMode(myGpioCopy, LED5, 0);
 
@@ -25,7 +25,7 @@ void ConfigureLeds(GPIO_Handle myGpioIn)
     GPIO_setDirection(myGpioCopy, POWER, GPIO_Direction_Output);
     GPIO_setDirection(myGpioCopy, RUNNING, GPIO_Direction_Output);
     GPIO_setDirection(myGpioCopy, ERROR, GPIO_Direction_Output);
-    GPIO_setDirection(myGpioCopy, KILLSWITCH, GPIO_Direction_Output);
+    GPIO_setDirection(myGpioCopy, DEADMAN, GPIO_Direction_Output);
     GPIO_setDirection(myGpioCopy, STREAM, GPIO_Direction_Output);
     GPIO_setDirection(myGpioCopy, LED5, GPIO_Direction_Output);
 
@@ -33,7 +33,7 @@ void ConfigureLeds(GPIO_Handle myGpioIn)
     GPIO_setLow(myGpioCopy, POWER);
     GPIO_setLow(myGpioCopy, RUNNING);
     GPIO_setLow(myGpioCopy, ERROR);
-    GPIO_setLow(myGpioCopy, KILLSWITCH);
+    GPIO_setLow(myGpioCopy, DEADMAN);
     GPIO_setLow(myGpioCopy, STREAM);
     GPIO_setLow(myGpioCopy, LED5);
 }

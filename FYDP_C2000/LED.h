@@ -14,7 +14,7 @@
 #define POWER	 	GPIO_Number_19
 #define RUNNING 	GPIO_Number_16
 #define ERROR 		GPIO_Number_17
-#define KILLSWITCH 	GPIO_Number_32
+#define DEADMAN 	GPIO_Number_32
 #define STREAM 		GPIO_Number_33
 #define LED5		GPIO_Number_18
 
