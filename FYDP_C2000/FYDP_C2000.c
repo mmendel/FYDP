@@ -201,7 +201,8 @@ void main(void)
 
 	for(;;)
     {
-    	for (j = 0; j < SAMPLE_TIME/CHECK_COMMAND_FREQ; j++)
+
+		for (j = 0; j < SAMPLE_TIME/CHECK_COMMAND_FREQ; j++)
     	{
         	//If there is a waiting command process it
     		if (commandData[0] == 1)
@@ -221,6 +222,7 @@ void main(void)
     		//smaUpdate(hand[i].mcph);
     	}
     }
+
 }
 
 __interrupt void sciaRxFifoIsr(void)

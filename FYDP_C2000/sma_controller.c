@@ -52,7 +52,9 @@ float ControllerStep(SMA* sma, float angle)
 
 	sma->fU3 = sma->fU2;
 	sma->fU2 = sma->fU1;
-	sma->fU1 = VoltageSaturator(-1*(F1*sma->fE1 + F2*sma->fE2 + F3*sma->fE3 - G2*sma->fU2 - G3*sma->fU3));
+	//sma->fU1 = VoltageSaturator(-1*(F1*sma->fE1 + F2*sma->fE2 + F3*sma->fE3 - G2*sma->fU2 - G3*sma->fU3));
+	sma->fU1 = VoltageSaturator(5*(F1*sma->fE1 + F2*sma->fE2 + F3*sma->fE3 - G2*sma->fU2 - G3*sma->fU3));
+
 	return VOLTAGE_TO_DUTY_CYCLE(sma->fU1);
 }
 
