@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 finger = 0
 joint = 0
 pos = 90
-minpos = 0
+minpos = 30
 setpos = 90
 portin = 'com6'
 interval = 10 #seconds
@@ -84,10 +84,10 @@ def stream():
 	my_print(filename)
 	with open(filename, "a") as f:
 		f.write(filename + '\n')
+	c.StreamStart(finger, joint)
 	posistion = PosistionUpdate(10, c, finger, joint, minpos, pos)	
 	#graph = Graph(1)	
 	plt.show()
-	c.StreamStart(finger, joint)
 
 	c.AllStart()
 	c.ser.flush()
@@ -124,10 +124,10 @@ if __name__ == "__main__":
 	portin = args.port
 	c = command.SCICommandInterface(port = portin)
 	
-	
+	#stream()
 	thread = Thread(target = stream)
 	thread.start()
-	time.sleep(5)	
+	time.sleep(3)	
 	fig = plt.figure()
 	ax = fig.add_subplot(111)
 	line1, = ax.plot(data)
@@ -140,5 +140,3 @@ if __name__ == "__main__":
 		line1.set_ydata(data)
 		line2.set_ydata(refdata)
 		plt.draw()
-
-
