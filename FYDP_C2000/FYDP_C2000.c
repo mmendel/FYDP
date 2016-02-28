@@ -233,7 +233,7 @@ void main(void)
 
     		DELAY_US(CHECK_COMMAND_FREQ);
     	}
-    	if (running == false || deadman == false)
+    	if (running == false)// || deadman == false)
     		continue;
 
     	//Configure for only one finger
