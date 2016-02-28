@@ -30,17 +30,17 @@ void ConfigureLeds(GPIO_Handle myGpioIn)
     GPIO_setDirection(myGpioCopy, LED5, GPIO_Direction_Output);
 
     // Disable all
-    GPIO_setLow(myGpioCopy, POWER);
-    GPIO_setLow(myGpioCopy, RUNNING);
-    GPIO_setLow(myGpioCopy, ERROR);
-    GPIO_setLow(myGpioCopy, DEADMAN);
-    GPIO_setLow(myGpioCopy, STREAM);
-    GPIO_setLow(myGpioCopy, LED5);
+    GPIO_setHigh(myGpioCopy, POWER);
+    GPIO_setHigh(myGpioCopy, RUNNING);
+    GPIO_setHigh(myGpioCopy, ERROR);
+    GPIO_setHigh(myGpioCopy, DEADMAN);
+    GPIO_setHigh(myGpioCopy, STREAM);
+    GPIO_setHigh(myGpioCopy, LED5);
 }
 
 void SetLedState(int led, int state)
 {
-	if (state == ON)
+	if (state == OFF)
 	    GPIO_setHigh(myGpioCopy, led);
 	else
 	    GPIO_setLow(myGpioCopy, led);
