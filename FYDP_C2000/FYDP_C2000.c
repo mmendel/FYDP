@@ -485,13 +485,25 @@ void smaUpdate(SMA *sma)
     ADC_clearIntFlag(myAdc, ADC_IntNumber_1);
     //Get ADC val
     adc_val =  ADC_readResult(myAdc, sma->uADCPin);
-    angle = VOLTAGE_TO_ANGLE(ADC_TICKS_TO_VOLT(adc_val));
+
+    switch (sma->jointId)
+    {
+    	case PIP:
+    	    angle = VOLTAGE_TO_ANGLE_PIP(ADC_TICKS_TO_VOLT(adc_val));
+    		break;
+    	case MCP_VERTICAL:
+    	    angle = VOLTAGE_TO_ANGLE_MCP(ADC_TICKS_TO_VOLT(adc_val));
+    		break;
+    	default:
+    	    angle = VOLTAGE_TO_ANGLE(ADC_TICKS_TO_VOLT(adc_val));
+    		break;
+
+    }
 
     if (sma->stream == true)
     	scia_float_xmit(angle);
 
-    LedPosistion(angle);
-
+    //LedPosistion(angle);
 
     duty_cycle = ControllerStep(sma, angle);
     setPWM(sma->uPwm, duty_cycle);
