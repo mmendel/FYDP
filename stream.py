@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 finger = 0
 joint = 0
 pos = 90
-minpos = 30
+minpos = 25
 setpos = 90
 portin = 'com6'
 interval = 10 #seconds
@@ -123,7 +123,8 @@ if __name__ == "__main__":
 	pos = args.Posistion
 	portin = args.port
 	c = command.SCICommandInterface(port = portin)
-	
+	c.AllStart()	
+	c.StreamStart(finger, joint)
 	#stream()
 	thread = Thread(target = stream)
 	thread.start()
