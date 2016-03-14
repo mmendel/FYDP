@@ -46,4 +46,15 @@ void SetLedState(int led, int state)
 	    GPIO_setLow(myGpioCopy, led);
 }
 
+void LedPosistion(float angle)
+{
+	int step = (int)angle/12;
+	SetLedState(POWER, 1 < step);
+	SetLedState(RUNNING, 2 < step);
+	SetLedState(ERROR, 3 < step);
+	SetLedState(DEADMAN,4 < step);
+	SetLedState(STREAM, 5 < step);
+	SetLedState(LED5, 6 < step);
+
+}
 

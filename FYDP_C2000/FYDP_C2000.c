@@ -164,6 +164,7 @@ void main(void)
     ConfigureLeds(myGpio);
     SetLedState(POWER, ON);
 
+
     // Setup a debug vector table and enable the PIE
     PIE_setDebugIntVectorTable(myPie);
     PIE_enable(myPie);
@@ -239,9 +240,9 @@ void main(void)
     	//Configure for only one finger
     	for (i = 0; i < 1; i ++)
     	{
-    		smaUpdate(hand[i].pip);
+    		//smaUpdate(hand[i].pip);
+    		smaUpdate(hand[i].mcpv);
     		//Disable the MCP joint
-    		//smaUpdate(hand[i].mcpv);
     		//smaUpdate(hand[i].mcph);
     	}
     }
@@ -303,8 +304,9 @@ void adc_init()
 	ADC_enable(myAdc);
 	ADC_setVoltRefSrc(myAdc, ADC_VoltageRefSrc_Int);
 
-	ADC_enableInt(myAdc, ADC_IntNumber_1);                                  		//Enable ADCINT1
+    ADC_setIntSrc(myAdc, ADC_IntNumber_1, ADC_IntSrc_EOC1);                 //Connect ADCINT1 to EOC1
 	ADC_setIntMode(myAdc, ADC_IntNumber_1, ADC_IntMode_ClearFlag);          		//Disable ADCINT1 Continuous mode
+	ADC_enableInt(myAdc, ADC_IntNumber_1);                                  		//Enable ADCINT1
 
 	ADC_setSocTrigSrc(myAdc, ADC_SocNumber_0, ADC_SocTrigSrc_Sw);
 	ADC_setSocChanNumber (myAdc, ADC_SocNumber_0, ADC_SocChanNumber_A1);
@@ -472,6 +474,9 @@ void scia_float_xmit(float f)
 void smaUpdate(SMA *sma)
 {
     //Force start of conversion
+    ADC_setIntSrc(myAdc, ADC_IntNumber_1, sma->uADCPin);                 //Connect ADCINT1 to EOC1
+
+    //ADC_forceConversion(myAdc, ADC_SocNumber_0);
     ADC_forceConversion(myAdc, sma->uADCPin);
     //Wait for end of conversion.
     while(ADC_getIntStatus(myAdc, ADC_IntNumber_1) == 0) {
@@ -484,6 +489,9 @@ void smaUpdate(SMA *sma)
 
     if (sma->stream == true)
     	scia_float_xmit(angle);
+
+    LedPosistion(angle);
+
 
     duty_cycle = ControllerStep(sma, angle);
     setPWM(sma->uPwm, duty_cycle);

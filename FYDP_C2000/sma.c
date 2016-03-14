@@ -61,7 +61,7 @@ void InitializeHand(Finger* hand)
 {
 	hand[0].fingerId = INDEX;
 	hand[0].pip = CreateSMA(PIP, PWM_0, ADC_ResultNumber_0);
-	hand[0].mcpv = CreateSMA(MCP_VERTICAL, PWM_1, ADC_ResultNumber_1);
+	hand[0].mcpv = CreateSMA(MCP_VERTICAL, PWM_2, ADC_ResultNumber_2);
 	hand[0].mcph = CreateSMA(MCP_HORIZONTAL, PWM_NONE, ADC_ResultNumber_2);
 
 	hand[1].fingerId = MIDDLE;

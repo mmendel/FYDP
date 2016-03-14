@@ -12,12 +12,15 @@
 
 #define POT_MIN_ANGLE 		0
 #define POT_MAX_ANGLE		90
-
-#define VOLTAGE_MIN_ANGLE	1.5
-#define VOLTAGE_MAX_ANGLE	0.55
+/*
+#define VOLTAGE_MIN_ANGLE	0.8292308
+#define VOLTAGE_MAX_ANGLE	2.131502
+*/
+#define VOLTAGE_MIN_ANGLE	0.277
+#define VOLTAGE_MAX_ANGLE	1.22
 
 #define PIP_ANGLE_MIN 		0
-#define PIP_ANGLE_MAX		100
+#define PIP_ANGLE_MAX		90
 
 #define MCPV_ANGLE_MIN		0
 #define MCPV_ANGLE_MAX		90
@@ -45,7 +48,7 @@
 
 #define VOLTAGE_TO_DUTY_CYCLE(x) (float)(x*100/(MAX_VOLTAGE - MIN_VOLTAGE))
 
-#define F1 					1.0
+#define F1 					5.0
 #define F2					0.0
 #define F3					0.0
 #define G2					0.0

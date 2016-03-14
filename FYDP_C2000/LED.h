@@ -18,11 +18,12 @@
 #define STREAM 		GPIO_Number_33
 #define LED5		GPIO_Number_18
 
-#define ON			0
-#define OFF			1
+#define ON			1
+#define OFF			0
 
 void ConfigureLeds(GPIO_Handle myGpio);
 void SetLedState(int led, int state);
+void LedPosistion(float angle);
 
 
 #endif /* LED_H_ */
